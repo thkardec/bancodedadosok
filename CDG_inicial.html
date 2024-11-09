@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório Financeiro</title>
+    <style>
+        /* Reset de margens e padding */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            height: 100vh; 
+            overflow-y: hidden; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Remover o sublinhado dos links */
+        a {
+            text-decoration: none;
+        }
+        
+        /* Container principal que ocupa toda a tela */
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            overflow-y: auto; 
+        }
+        
+        /* Estilo de cada bloco de informação */
+        .info-block {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            font-size: 1.5em;
+            color: #333;
+            flex: 2;
+        }
+        
+        .info-block:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Ícones e cores */
+        .receita {
+            border-left: 5px solid #28a745;
+        }
+        
+        .despesa {
+            border-left: 5px solid #dc3545;
+        }
+        
+        .info-icon {
+            font-size: 2.5em;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Total de soma */
+        .total-soma {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+            border-top: 3px solid #007bff;
+        }
+        
+        /* Responsividade para dispositivos móveis */
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+                gap: 20px;
+            }
+            .info-block {
+                font-size: 1.4em;
+                padding: 18px;
+            }
+            .info-icon {
+                font-size: 2.2em;
+                padding: 12px;
+            }
+            .total-soma {
+                font-size: 2em;
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Receita -->
+        <a href="/receita.html" class="info-block receita">
+            <span class="info-icon">📈</span>
+            <span>Receita:</span>
+            <span id="totalReceitas">R$ 0,00</span>
+        </a>
+        <!-- Despesa -->
+        <a href="/despesa.html" class="info-block despesa">
+            <span class="info-icon">📉</span>
+            <span>Despesas:</span>
+            <span id="totalDespesas">R$ 0,00</span>
+        </a>
+        <!-- Total -->
+        <a href="/total.html" class="total-soma">
+            <span>Total:</span>
+            <span id="totalSoma">R$ 0,00</span>
+        </a>
+    </div>
+
+    <!-- Firebase SDK e script para cálculo financeiro -->
+    <script type="module">
+        // Importa as funções do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6SVZnzC0OfMmEXoxgPnd9XFhqKDRYFgg",
+            authDomain: "thiago-2bafb.firebaseapp.com",
+            projectId: "thiago-2bafb",
+            storageBucket: "thiago-2bafb.appspot.com",
+            messagingSenderId: "768321589968",
+            appId: "1:768321589968:web:5ad525e227b5adec9e04d5"
+        };
+
+        // Inicializa o Firebase e o Firestore
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Função para carregar e calcular dados financeiros
+        async function carregarDadosFinanceiros() {
+            let totalReceitas = 0;
+            let totalDespesas = 0;
+            try {
+                const querySnapshot = await getDocs(collection(db, "transacoes"));
+                querySnapshot.forEach((doc) => {
+                    const transacao = doc.data();
+                    const valor = parseFloat(transacao.valor);
+                    if (transacao.tipo === "Entrada") {
+                        totalReceitas += valor;
+                    } else if (transacao.tipo === "Saida") {
+                        totalDespesas += valor;
+                    }
+                });
+
+                // Calcula o total (saldo)
+                const totalSoma = totalReceitas - totalDespesas;
+
+                // Exibe os valores no HTML
+                document.getElementById("totalReceitas").textContent = `R$ ${totalReceitas.toFixed(2)}`;
+                document.getElementById("totalDespesas").textContent = `R$ ${totalDespesas.toFixed(2)}`;
+                document.getElementById("totalSoma").textContent = `R$ ${totalSoma.toFixed(2)}`;
+            } catch (error) {
+                console.error("Erro ao carregar dados financeiros: ", error);
+                alert("Erro ao carregar os dados financeiros.");
+            }
+        }
+
+        // Carrega os dados financeiros ao carregar a página
+        carregarDadosFinanceiros();
+    </script>
+
+</body>
+</html>
