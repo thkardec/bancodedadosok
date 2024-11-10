@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatório Financeiro</title>
     <style>
-        /* Reset de margens e padding */
         body, html {
             margin: 0;
             padding: 0;
@@ -18,12 +17,10 @@
             align-items: center;
         }
         
-        /* Remover o sublinhado dos links */
         a {
             text-decoration: none;
         }
         
-        /* Container principal que ocupa toda a tela */
         .container {
             width: 100%;
             max-width: 400px;
@@ -37,7 +34,6 @@
             overflow-y: auto; 
         }
         
-        /* Estilo de cada bloco de informação */
         .info-block {
             display: flex;
             align-items: center;
@@ -55,7 +51,6 @@
             transform: scale(1.05);
         }
         
-        /* Ícones e cores */
         .receita {
             border-left: 5px solid #28a745;
         }
@@ -72,7 +67,6 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
-        /* Total de soma */
         .total-soma {
             display: flex;
             justify-content: space-between;
@@ -86,7 +80,45 @@
             border-top: 3px solid #007bff;
         }
         
-        /* Responsividade para dispositivos móveis */
+        .open-sidebar-btn {
+            font-size: 2em;
+            cursor: pointer;
+            color: #6f7f88;
+            padding: 10px;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #282c34;
+            overflow-x: hidden;
+            transition: width 0.4s ease;
+            padding-top: 60px;
+            z-index: 1000;
+        }
+
+        .sidebar a {
+            padding: 15px 20px;
+            text-decoration: none;
+            font-size: 1.1em;
+            color: #f0f0f0;
+            display: block;
+            transition: background-color 0.3s, padding-left 0.3s;
+            border-bottom: 1px solid #333;
+        }
+
+        .sidebar a:hover {
+            background-color: #007bff;
+            padding-left: 25px;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 10px;
@@ -108,33 +140,38 @@
     </style>
 </head>
 <body>
+
+    <span class="open-sidebar-btn" onclick="openSidebar()">☰</span>
+
+    <nav class="sidebar" id="mySidebar" aria-label="Menu lateral">
+        <span class="closebtn" onclick="closeSidebar()">×</span>
+        <a href="index.html">Início</a>
+        <a href="#services">Serviços</a>
+        <a href="#testimonials">Depoimentos</a>
+        <a href="#contact">Contato</a>
+    </nav>
+
     <div class="container">
-        <!-- Receita -->
-        <a href="/receita.html" class="info-block receita">
-            <span class="info-icon">📈</span>
+        <a href="CDG_entrada.html" class="info-block receita">
+            <span class="info-icon">📉</span>
             <span>Receita:</span>
             <span id="totalReceitas">R$ 0,00</span>
         </a>
-        <!-- Despesa -->
-        <a href="/despesa.html" class="info-block despesa">
-            <span class="info-icon">📉</span>
+        <a href="CDG_saida.html" class="info-block despesa">
+            <span class="info-icon">📈</span>
             <span>Despesas:</span>
             <span id="totalDespesas">R$ 0,00</span>
         </a>
-        <!-- Total -->
-        <a href="/total.html" class="total-soma">
+        <a href="CDG_editar.html" class="total-soma">
             <span>Total:</span>
             <span id="totalSoma">R$ 0,00</span>
         </a>
     </div>
 
-    <!-- Firebase SDK e script para cálculo financeiro -->
     <script type="module">
-        // Importa as funções do Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 
-        // Configuração do Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyA6SVZnzC0OfMmEXoxgPnd9XFhqKDRYFgg",
             authDomain: "thiago-2bafb.firebaseapp.com",
@@ -144,41 +181,61 @@
             appId: "1:768321589968:web:5ad525e227b5adec9e04d5"
         };
 
-        // Inicializa o Firebase e o Firestore
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Função para carregar e calcular dados financeiros
         async function carregarDadosFinanceiros() {
             let totalReceitas = 0;
             let totalDespesas = 0;
+
             try {
                 const querySnapshot = await getDocs(collection(db, "transacoes"));
+                console.log("Carregando transações...");
+
+                if (querySnapshot.empty) {
+                    console.log("Nenhuma transação encontrada.");
+                }
+
                 querySnapshot.forEach((doc) => {
                     const transacao = doc.data();
-                    const valor = parseFloat(transacao.valor);
-                    if (transacao.tipo === "Entrada") {
+                    console.log(`Processando transação: ${JSON.stringify(transacao)}`);
+
+                    const valor = parseFloat(transacao.valor); // Garantir que o valor seja numérico
+                    const tipoTransacao = transacao.tipo ? transacao.tipo.toLowerCase().trim() : "";
+
+                    if (tipoTransacao === "entrada") {
                         totalReceitas += valor;
-                    } else if (transacao.tipo === "Saida") {
+                    } else if (tipoTransacao === "saída") {
                         totalDespesas += valor;
                     }
                 });
 
-                // Calcula o total (saldo)
+                // Subtrai as receitas pelas despesas
                 const totalSoma = totalReceitas - totalDespesas;
+                console.log(`Total Receitas: ${totalReceitas}, Total Despesas: ${totalDespesas}, Total Geral (Receita - Despesa): ${totalSoma}`);
 
-                // Exibe os valores no HTML
+                // Atualiza os valores na interface
                 document.getElementById("totalReceitas").textContent = `R$ ${totalReceitas.toFixed(2)}`;
                 document.getElementById("totalDespesas").textContent = `R$ ${totalDespesas.toFixed(2)}`;
                 document.getElementById("totalSoma").textContent = `R$ ${totalSoma.toFixed(2)}`;
+
             } catch (error) {
                 console.error("Erro ao carregar dados financeiros: ", error);
                 alert("Erro ao carregar os dados financeiros.");
             }
         }
 
-        // Carrega os dados financeiros ao carregar a página
         carregarDadosFinanceiros();
+    </script>
+
+    <script>
+        function openSidebar() {
+            document.getElementById("mySidebar").style.width = "250px";
+        }
+
+        function closeSidebar() {
+            document.getElementById("mySidebar").style.width = "0";
+        }
     </script>
 
 </body>

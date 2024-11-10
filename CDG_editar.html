@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizar e Editar Transações</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            text-align: center;
+            padding: 20px;
+            background-color: #050516;
+            color: white;
+        }
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #08031d;
+            color: white;
+        }
+        button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            font-size: 14px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #d32f2f;
+        }
+        .edit-btn {
+            background-color: #4CAF50;
+            cursor: pointer;
+        }
+        .edit-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Menu Lateral */
+        .open-sidebar-btn {
+            font-size: 2em;
+            cursor: pointer;
+            color: #6f7f88;
+            padding: 10px;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+        }
+
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #282c34;
+            overflow-x: hidden;
+            transition: width 0.4s ease;
+            padding-top: 60px;
+            z-index: 1000;
+        }
+
+        .sidebar a {
+            padding: 15px 20px;
+            text-decoration: none;
+            font-size: 1.1em;
+            color: #f0f0f0;
+            display: block;
+            transition: background-color 0.3s, padding-left 0.3s;
+            border-bottom: 1px solid #333;
+        }
+
+        .sidebar a:hover {
+            background-color: #007bff;
+            padding-left: 25px;
+        }
+
+        .sidebar .closebtn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2em;
+            color: #aaa;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Botão para abrir o menu lateral -->
+    <span class="open-sidebar-btn" onclick="openSidebar()">☰</span>
+
+    <!-- Menu Lateral -->
+    <nav class="sidebar" id="mySidebar" aria-label="Menu lateral">
+        <span class="closebtn" onclick="closeSidebar()">×</span>
+        <a href="index.html">Início</a>
+        <a href="#services">Serviços</a>
+        <a href="#testimonials">Depoimentos</a>
+        <a href="#contact">Contato</a>
+    </nav>
+
+    <h1>Visualizar e Editar Transações</h1>
+    
+    <div class="container">
+        <table id="transacoesTable">
+            <thead>
+                <tr>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                    <th>Data</th>
+                    <th>Categoria</th>
+                    <th>Tipo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- As transações serão carregadas aqui -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Importa as funções do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6SVZnzC0OfMmEXoxgPnd9XFhqKDRYFgg",
+            authDomain: "thiago-2bafb.firebaseapp.com",
+            projectId: "thiago-2bafb",
+            storageBucket: "thiago-2bafb.appspot.com",
+            messagingSenderId: "768321589968",
+            appId: "1:768321589968:web:5ad525e227b5adec9e04d5"
+        };
+
+        // Inicializa o Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Função para carregar transações do Firestore
+        async function carregarTransacoes() {
+            const transacoesTable = document.getElementById("transacoesTable").getElementsByTagName("tbody")[0];
+            transacoesTable.innerHTML = ''; // Limpa a tabela antes de recarregar
+
+            try {
+                const querySnapshot = await getDocs(collection(db, "transacoes"));
+                console.log("Transações carregadas com sucesso:", querySnapshot.size); // Diagnóstico
+                querySnapshot.forEach((doc) => {
+                    const transacao = doc.data();
+                    const tr = document.createElement("tr");
+
+                    tr.innerHTML = `
+                        <td>${transacao.descricao || ''}</td>
+                        <td>R$ ${transacao.valor.toFixed(2)}</td>
+                        <td>${transacao.data}</td>
+                        <td>${transacao.categoria}</td>
+                        <td>${transacao.tipo}</td>
+                        <td>
+                            <button class="edit-btn" onclick="editarTransacao('${doc.id}', '${transacao.descricao}', ${transacao.valor}, '${transacao.data}', '${transacao.categoria}', '${transacao.tipo}')">Editar</button>
+                            <button onclick="deletarTransacao('${doc.id}')">Deletar</button>
+                        </td>
+                    `;
+                    transacoesTable.appendChild(tr);
+                });
+            } catch (error) {
+                console.error("Erro ao carregar transações: ", error);
+                alert("Erro ao carregar transações.");
+            }
+        }
+
+        // Função para editar a transação
+        window.editarTransacao = async function(id, descricao, valor, data, categoria, tipo) {
+            console.log(`Editando transação: ${id}`); // Diagnóstico
+            // Solicita os novos dados ao usuário
+            const descricaoNovo = prompt("Descrição:", descricao);
+            const valorNovo = parseFloat(prompt("Valor:", valor));
+            const dataNova = prompt("Data (YYYY-MM-DD):", data);
+            const categoriaNova = prompt("Categoria:", categoria);
+            const tipoNovo = prompt("Tipo (Entrada ou Saida):", tipo);
+
+            if (descricaoNovo && valorNovo && dataNova && categoriaNova && tipoNovo) {
+                try {
+                    // Atualiza a transação no Firestore
+                    const transacaoRef = doc(db, "transacoes", id);
+                    console.log("Atualizando transação no Firestore com id:", id); // Diagnóstico
+                    await updateDoc(transacaoRef, {
+                        descricao: descricaoNovo,
+                        valor: valorNovo,
+                        data: dataNova,
+                        categoria: categoriaNova,
+                        tipo: tipoNovo
+                    });
+                    alert("Transação atualizada com sucesso!");
+                    carregarTransacoes(); // Recarrega a lista de transações
+                } catch (error) {
+                    console.error("Erro ao atualizar transação: ", error);
+                    alert("Erro ao atualizar transação.");
+                }
+            } else {
+                alert("Por favor, preencha todos os campos.");
+            }
+        }
+
+        // Função para deletar a transação
+        window.deletarTransacao = async function(id) {
+            console.log(`Deletando transação: ${id}`); // Diagnóstico
+            if (confirm("Tem certeza de que deseja deletar esta transação?")) {
+                try {
+                    const transacaoRef = doc(db, "transacoes", id);
+                    console.log("Deletando transação no Firestore com id:", id); // Diagnóstico
+                    await deleteDoc(transacaoRef);
+                    alert("Transação deletada com sucesso!");
+                    carregarTransacoes(); // Recarrega a lista de transações
+                } catch (error) {
+                    console.error("Erro ao deletar transação: ", error);
+                    alert("Erro ao deletar transação.");
+                }
+            }
+        }
+
+        // Carrega as transações assim que a página for carregada
+        carregarTransacoes();
+
+        // Função para abrir o menu lateral
+        window.openSidebar = function() {
+            document.getElementById("mySidebar").style.width = "250px";
+        }
+
+        // Função para fechar o menu lateral
+        window.closeSidebar = function() {
+            document.getElementById("mySidebar").style.width = "0";
+        }
+    </script>
+
+</body>
+</html>

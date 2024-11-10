@@ -10,55 +10,78 @@
             margin: 0;
             padding: 0;
             font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
+            background-color: #fafafa;
+            color: #444;
             height: 100%;
+            overflow-x: hidden;
         }
 
-        /* Estilos para a barra de navegação */
-        nav {
-            background-color: #007bff;
-            padding: 15px;
+        /* Estilo aprimorado para o menu lateral */
+        .sidebar {
+            height: 100%;
+            width: 0;
             position: fixed;
-            width: 100%;
             top: 0;
             left: 0;
+            background-color: #282c34;
+            overflow-x: hidden;
+            transition: width 0.4s ease;
+            padding-top: 60px;
             z-index: 1000;
         }
-        
-        nav ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-        
-        nav ul li {
-            display: inline-block;
-            margin: 0 20px;
-        }
-        
-        nav ul li a {
-            color: white;
-            font-size: 1.2em;
+
+        .sidebar a {
+            padding: 15px 20px;
             text-decoration: none;
+            font-size: 1.1em;
+            color: #f0f0f0;
+            display: block;
+            transition: background-color 0.3s, padding-left 0.3s;
+            border-bottom: 1px solid #333;
         }
-        
-        nav ul li a:hover {
-            text-decoration: underline;
+
+        .sidebar a:hover {
+            background-color: #007bff;
+            padding-left: 25px;
         }
-        
-        /* Seção principal */
+
+        .sidebar .closebtn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2em;
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        /* Botão de menu em estilo hamburger */
+        .open-sidebar-btn {
+            font-size: 2em;
+            cursor: pointer;
+            color: #6f7f88;
+            padding: 10px;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+        }
+
+        /* Seções Hero aprimoradas */
         .hero {
-    background: url('aa.jpg') no-repeat center center/cover;
-    height: 100vh;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    position: relative;
-}
+            background: url('aa.jpg') no-repeat center center/cover;
+            height: 60vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        /* Sobreposição transparente */
         .hero::after {
             content: '';
             position: absolute;
@@ -66,222 +89,75 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
+            background-color: rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease;
         }
 
-        .hero-content {
+        .hero:hover {
+            transform: scale(1.03);
+        }
+
+        .hero:hover::after {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        /* Segunda Seção Hero com aa.png */
+        .hero-second {
+            background: url('aa.png') no-repeat center center/cover;
+            height: 60vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             position: relative;
-            z-index: 1;
-        }
-
-        .hero h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-        }
-
-        .hero p {
-            font-size: 1.2em;
             margin-bottom: 20px;
-        }
-
-        .hero .btn {
-            background-color: #ff9800;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 1.1em;
-            transition: background-color 0.3s;
-        }
-
-        .hero .btn:hover {
-            background-color: #e68900;
-        }
-
-        /* Seção de serviços */
-        .services {
-            background-color: white;
-            padding: 50px 20px;
-            text-align: center;
-        }
-
-        .services h2 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
-
-        .services .service-card {
-            display: inline-block;
-            width: 30%;
-            margin: 20px;
-            padding: 30px;
-            background-color: #f1f1f1;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
+            overflow: hidden;
         }
 
-        .services .service-card i {
-            font-size: 3em;
-            color: #007bff;
-            margin-bottom: 20px;
-        }
-
-        .services .service-card h3 {
-            font-size: 1.8em;
-            margin-bottom: 10px;
-        }
-
-        .services .service-card p {
-            font-size: 1.1em;
-            color: #555;
-        }
-
-        /* Testemunhos */
-        .testimonials {
-            background-color: #007bff;
-            color: white;
-            padding: 50px 20px;
-            text-align: center;
-        }
-
-        .testimonials h2 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
-
-        .testimonials .testimonial-card {
-            display: inline-block;
-            width: 30%;
-            margin: 20px;
-            padding: 30px;
-            background-color: #fff;
-            color: #007bff;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .testimonials .testimonial-card p {
-            font-size: 1.2em;
-            color: #333;
-        }
-
-        .testimonials .testimonial-card footer {
-            font-size: 1em;
-            margin-top: 20px;
-            font-style: italic;
-            color: #555;
-        }
-
-        /* Seção de contato */
-        .contact {
-            padding: 50px 20px;
-            text-align: center;
-            background-color: #f5f5f5;
-        }
-
-        .contact h2 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
-
-        .contact p {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-        }
-
-        .contact .btn {
-            background-color: #28a745;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 1.1em;
-            transition: background-color 0.3s;
-        }
-
-        .contact .btn:hover {
-            background-color: #218838;
-        }
-
-        /* Responsividade */
+        /* Responsividade para dispositivos móveis */
         @media (max-width: 768px) {
-            .services .service-card, .testimonials .testimonial-card {
-                width: 100%;
-                margin-bottom: 30px;
+            .sidebar {
+                width: 75%;
             }
 
-            .services, .testimonials {
-                padding: 30px 20px;
+            .hero, .hero-second {
+                height: 40vh;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Barra de navegação -->
-    <nav>
-        <ul>
-            <li><a href="#home">Início</a></li>
-            <li><a href="#services">Serviços</a></li>
-            <li><a href="#testimonials">Depoimentos</a></li>
-            <li><a href="#contact">Contato</a></li>
-        </ul>
+    <!-- Botão para abrir o menu lateral -->
+    <span class="open-sidebar-btn" onclick="openSidebar()">☰</span>
+
+    <!-- Menu Lateral -->
+    <nav class="sidebar" id="mySidebar" aria-label="Menu lateral">
+        <span class="closebtn" onclick="closeSidebar()">×</span>
+        <a href="#home">Início</a>
+        <a href="#services">Serviços</a>
+        <a href="#testimonials">Depoimentos</a>
+        <a href="#contact">Contato</a>
     </nav>
 
-    <!-- Seção Hero -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <h1>Transforme sua Vida Agora!</h1>
-            <p>Descubra ferramentas poderosas para o seu crescimento pessoal e profissional.</p>
-            <a href="#services" class="btn">Saiba Mais</a>
-        </div>
-    </section>
+    <!-- Primeira Seção Hero -->
+    <section class="hero" onclick="window.location.href='CDG_inicial.html'" aria-label="Seção de desenvolvimento pessoal"></section>
 
-    <!-- Seção de Serviços -->
-    <section class="services" id="services">
-        <h2>Nosso Trabalho</h2>
-        <div class="service-card">
-            <i class="fas fa-book"></i>
-            <h3>Consultoria Pessoal</h3>
-            <p>Oferecemos um acompanhamento completo para ajudar você a atingir seus objetivos.</p>
-        </div>
-        <div class="service-card">
-            <i class="fas fa-chalkboard-teacher"></i>
-            <h3>Treinamentos</h3>
-            <p>Cursos especializados para aprimorar suas habilidades e alcançar o sucesso.</p>
-        </div>
-        <div class="service-card">
-            <i class="fas fa-clipboard-list"></i>
-            <h3>Planejamento Estratégico</h3>
-            <p>Desenvolvemos estratégias personalizadas para que você atinja suas metas.</p>
-        </div>
-    </section>
+    <!-- Segunda Seção Hero com aa.png -->
+    <section class="hero-second" onclick="window.location.href='CDG_inicial.html'" aria-label="Seção de desenvolvimento pessoal"></section>
 
-    <!-- Seção de Depoimentos -->
-    <section class="testimonials" id="testimonials">
-        <h2>O Que Nossos Clientes Dizem</h2>
-        <div class="testimonial-card">
-            <p>"Graças ao apoio da equipe, consegui melhorar minha produtividade e alcançar meus objetivos."</p>
-            <footer>- João Silva</footer>
-        </div>
-        <div class="testimonial-card">
-            <p>"A consultoria personalizada foi um divisor de águas para minha carreira profissional."</p>
-            <footer>- Maria Oliveira</footer>
-        </div>
-        <div class="testimonial-card">
-            <p>"Os treinamentos são práticos e realmente fazem a diferença no meu dia a dia."</p>
-            <footer>- Carlos Souza</footer>
-        </div>
-    </section>
+    <!-- Script para abrir e fechar o menu lateral -->
+    <script>
+        function openSidebar() {
+            document.getElementById("mySidebar").style.width = "250px";
+        }
 
-    <!-- Seção de Contato -->
-    <section class="contact" id="contact">
-        <h2>Entre em Contato</h2>
-        <p>Gostaria de saber mais? Entre em contato conosco para agendar uma consulta.</p>
-        <a href="mailto:contato@desenvolvimentopessoal.com" class="btn">Enviar E-mail</a>
-    </section>
+        function closeSidebar() {
+            document.getElementById("mySidebar").style.width = "0";
+        }
+    </script>
 
 </body>
 </html>
