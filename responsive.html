@@ -1,124 +1,134 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Cadastro</title>
+    <link rel="stylesheet" href="style.css">
+    <title>Formulário Personalizado</title>
     <style>
-        * {
-            padding: 0;
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+        *{
             margin: 0;
+            padding: 0;
             box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
         }
 
-        html, body {
-            height: 100%; /* Garantir que a altura ocupe 100% da tela */
-            width: 100%; /* Garantir que a largura ocupe 100% da tela */
-        }
-
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f4f4f4;
-            color: #333;
-            padding: 0 10px; /* Adicionar padding para evitar que o conteúdo fique colado nas bordas */
-        }
-
-        #cursos {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%; /* Ocupar toda a largura da tela */
-            height: 100%; /* Ocupar toda a altura da tela */
-            padding: 20px;
-            background: #f4f4f4;
-        }
-
-        #cursos form {
-            width: 100%; /* Formulário ocupa toda a largura disponível */
-            height: 100%; /* Formulário ocupa toda a altura da tela */
-            color: #2A2850;
-            background: #fff;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            font-size: 18px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between; /* Espaça os elementos do formulário de forma que ocupem todo o espaço */
-        }
-
-        #cursos form input {
-            width: 100%; /* Garantir que os inputs ocupem toda a largura */
-            margin: 10px 0;
-            padding: 15px;
-            background: #fff;
-            border: solid 1px #2A2850;
-            font-size: 14px;
-            border-radius: 5px;
-        }
-
-        #cursos form button {
-            background: #2A2850;
+        body{
             width: 100%;
-            height: 50px;
-            border: none;
-            color: #fff;
-            font-size: 20px;
-            font-weight: 600;
-            margin-top: 20px;
-            border-radius: 50px;
+            height: 100vh;
+            /* Alterei o fundo para uma cor sólida */
+            background-color: #F0F0F0; /* Você pode escolher qualquer cor aqui, por exemplo, um tom suave de cinza */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        #cursos form button:hover {
-            background: rgb(62, 59, 114);
+        .container{
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 6%;
         }
 
-        #cursos label {
+        form{
+            background: #fff;
+            max-width: 500px;
+            height: 500px;
+            padding: 40px;
+            border-radius: 20px;
+        }
+
+        form h1{
+            text-align: center;
+            margin-bottom: 10px;
+            color: #2D5966;
+            font-size: 22pt;
+        }
+
+        form p{
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        form .input-single{
+            position: relative;
+            margin: 30px 0;
+        }
+
+        form .input-single label{
+            position: absolute;
+            left: 0;
+            bottom: 5px;
+            cursor: text;
+            transition: all 0.5s;
+            color: #808080;
+        }
+
+        form .input-single .input{
+            width: 100%;
+            border: 0;
+            border-bottom: 2px solid #808080;
+            padding: 5px;
+            outline: 0;
             font-size: 16px;
-            margin-bottom: 5px;
-            display: block;
         }
 
-        @media (max-width: 600px) {
-            #cursos form {
-                padding: 20px;
-            }
+        form .input-single .input:focus{
+            border-bottom: 2px solid #2D5966;
+        }
 
-            #cursos form input,
-            #cursos form button {
-                font-size: 16px;
-            }
+        form .input-single .input:focus ~ label,
+        form .input-single .input:valid ~ label{
+            transform: translateY(-20px);
+            font-size: 12px;
+            color: #2D5966;
+        }
 
-            #cursos label {
-                font-size: 14px;
-            }
+        .btn{
+            width: 100%;
+            text-align: center;
+        }
+
+        form input[type=submit]{
+            padding: 10px 40px;
+            border: 0;
+            border-radius: 10px;
+            background-color: #2D5966;
+            color: #fff;
+            font-size: 14pt;
+            cursor: pointer;
         }
     </style>
 </head>
-
 <body>
-    <section id="cursos">
-        <form action="POST">
-            <label for="nome">Nome</label>
-            <input type="text" id="nome" placeholder="Seu nome completo" required>
-
-            <label for="usuario">Usuário</label>
-            <input type="text" id="usuario" placeholder="username" required>
-
-            <label for="senha">Senha</label>
-            <input type="password" id="senha" placeholder="Digite uma senha" required>
-
-            <label for="email">E-mail</label>
-            <input type="email" id="email" placeholder="Seu endereço de e-mail" required>
-
-            <button type="submit">Cadastrar</button>
-        </form>
+    <section class="form-container">
+        <div class="container">
+            <form method="post" action="envia.php">
+                <h1>Entre em contato</h1>
+               
+                <div class="input-single">
+                    <input class="input" type="text" id="nome" name="nome" required autocomplete="off">
+                    <label for="nome">Seu nome completo</label>
+                </div>
+                <div class="input-single">
+                    <input class="input" type="text" id="email" name="email" required autocomplete="off">
+                    <label for="email">Seu e-mail</label>
+                </div>
+                <div class="input-single">
+                    <input class="input" type="text" id="telefone" name="telefone" required autocomplete="off">
+                    <label for="telefone">Seu telefone</label>
+                </div>
+                <div class="input-single">
+                    <input class="input" id="mensagem" name="mensagem" required autocomplete="off">
+                    <label for="mensagem">Sua mensagem</label>
+                </div>
+                <div class="btn">
+                    <input type="submit" value="Enviar">
+                </div>
+            </form>
+        </div><!--container-->
     </section>
 </body>
-
 </html>
